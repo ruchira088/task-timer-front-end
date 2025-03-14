@@ -1,10 +1,12 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import Timer from "@/components/timer/Timer"
 
 export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+        <Timer/>
         <Image
           className={styles.logo}
           src="/next.svg"
