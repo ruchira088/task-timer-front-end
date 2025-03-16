@@ -1,0 +1,21 @@
+.timer {
+  .timerButtonPanel {
+    display: flex;
+    justify-content: center;
+
+    .timerButton {
+      padding: 0.25em 0.5em;
+      margin: 0.5em;
+    }
+  }
+}
+
+.timerDisplay {
+  display: flex;
+  justify-content: center;
+
+  .timerDigits {
+    display: inline-block;
+    padding: 0.5em;
+  }
+}
