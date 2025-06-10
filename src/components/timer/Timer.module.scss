@@ -1,11 +1,34 @@
 .timer {
-  .timerButtonPanel {
+  .footer {
     display: flex;
     justify-content: center;
+    .timerButtonPanel {
+      position: relative;
+      width: 50%;
+      min-width: 10em;
 
-    .timerButton {
-      padding: 0.25em 0.5em;
-      margin: 0.5em;
+      .timerButton {
+        padding: 0.25em 0.5em;
+        position: absolute;
+      }
+
+      .resetButton {
+        right: 0;
+      }
+
+      .actionButton {
+        left: 0;
+      }
+    }
+  }
+
+  .addTime {
+    .addTimeButton {
+
+    }
+
+    .hideAddSecondsInput {
+      display: none;
     }
   }
 }
@@ -13,9 +36,57 @@
 .timerDisplay {
   display: flex;
   justify-content: center;
+  font-size: 4em;
 
-  .timerDigits {
-    display: inline-block;
+  .timerDisplayUnit {
+    display: flex;
+    flex-direction: column;
     padding: 0.5em;
+    width: 1.5em;
+  }
+
+  .timeSeparator {
+    align-self: flex-end;
+    padding-bottom: 0.5em;
+  }
+
+  .value, .unit {
+    text-align: center;
+  }
+}
+
+@container (min-width: 45em) {
+  .timerButton {
+    font-size: 1.5em;
+  }
+}
+
+@container (max-width: 45em) {
+  .timerDisplay {
+    font-size: 3em;
+  }
+
+  .timerButton {
+    font-size: 1.25em;
+  }
+}
+
+@container (max-width: 35em) {
+  .timerDisplay {
+    font-size: 2em;
+  }
+
+  .timerButton {
+    font-size: 1.1em;
+  }
+}
+
+@container (max-width: 24em) {
+  .timerDisplay {
+    font-size: 1.25em;
+  }
+
+  .timerButton {
+    font-size: 1em;
   }
 }
