@@ -1,7 +1,11 @@
 .timer {
+  margin-top: -20em;
+  position: relative;
+
   .footer {
     display: flex;
     justify-content: center;
+
     .timerButtonPanel {
       position: relative;
       width: 50%;
@@ -21,15 +25,31 @@
       }
     }
   }
+}
 
-  .addTime {
-    .addTimeButton {
+.addTime {
+  position: absolute;
+  right: 0;
+  margin-top: 5em;
 
-    }
+  button, input {
+    width: 50%;
+    margin: 0 0 0 auto;
+    min-width: 8em;
+  }
 
-    .hideAddSecondsInput {
-      display: none;
-    }
+  button {
+    padding: 0.5em;
+  }
+
+  .addTimeInput {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .hideAddSecondsInput {
+    display: none;
   }
 }
 
@@ -59,6 +79,16 @@
   .timerButton {
     font-size: 1.5em;
   }
+
+  .addTime {
+    input {
+      font-size: 2em;
+    }
+
+    button {
+      font-size: 1.1em;
+    }
+  }
 }
 
 @container (max-width: 45em) {
@@ -68,6 +98,12 @@
 
   .timerButton {
     font-size: 1.25em;
+  }
+
+  .addTime {
+    input {
+      font-size: 1.75em;
+    }
   }
 }
 
@@ -79,6 +115,12 @@
   .timerButton {
     font-size: 1.1em;
   }
+
+  .addTime {
+    input {
+      font-size: 1.5em;
+    }
+  }
 }
 
 @container (max-width: 24em) {
@@ -88,5 +130,11 @@
 
   .timerButton {
     font-size: 1em;
+  }
+
+  .addTime {
+    input {
+      font-size: 1.25em;
+    }
   }
 }

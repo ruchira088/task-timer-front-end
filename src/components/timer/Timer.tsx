@@ -72,17 +72,19 @@ const Timer = () => {
         </div>
       </div>
       <div className={styles.addTime}>
-        <div
+        <button
           onClick={() => setShowAddSeconds(true)}
-          className={classNames(styles.addTimeButton, {[styles.hideAddSecondsInput]: showAddSeconds})}>
+          className={classNames({[styles.hideAddSecondsInput]: showAddSeconds})}>
           Add Time
-        </div>
-        <div className={classNames({[styles.hideAddSecondsInput]: !showAddSeconds})}>
+        </button>
+        <div className={classNames(styles.addTimeInput, {[styles.hideAddSecondsInput]: !showAddSeconds})}>
           <input value={inputValue} onChange={(changeEvent) => setInputValue(changeEvent.target.value)}/>
-          <div>
-            <button onClick={addTime} disabled={isNaN(parseInt(inputValue))}>Add Seconds</button>
-            <button onClick={cancelAddSeconds}>Cancel</button>
-          </div>
+          <button onClick={addTime} disabled={isNaN(parseInt(inputValue))}>
+            Add Seconds
+          </button>
+          <button onClick={cancelAddSeconds}>
+            Cancel
+          </button>
         </div>
       </div>
     </div>
