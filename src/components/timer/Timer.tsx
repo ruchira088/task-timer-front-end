@@ -64,7 +64,7 @@ const Timer = () => {
 
   return (
     <div className={styles.timer}>
-      <TimerDisplay milliseconds={milliseconds}/>
+      <TimerDisplay milliseconds={milliseconds} isActive={startTime !== undefined}/>
       <div className={styles.footer}>
         <div className={styles.timerButtonPanel}>
           <button onClick={toggleActive} className={classNames(styles.timerButton, styles.actionButton)}>{label}</button>
@@ -120,7 +120,8 @@ function repeat<T>(generator: () => T, count: number): T[] {
 }
 
 type TimerDisplayProps = {
-  milliseconds: number
+  readonly milliseconds: number
+  readonly isActive: boolean
 }
 
 const TimerDisplay: React.FC<TimerDisplayProps> =
@@ -132,6 +133,12 @@ const TimerDisplay: React.FC<TimerDisplayProps> =
 
     const title = (hours > 0 ? [hours] : []).concat([minutes, seconds])
       .map(value => formatInteger(value, 2)).join(":")
+
+    const isPaused = !props.isActive && props.milliseconds > 0
+
+    useEffect(() => {
+      document.title = `Task Timer - ${title}` + (isPaused ? " (Paused)" : "")
+    }, [title, isPaused])
 
     return (
       <div className={styles.timerDisplay}>
