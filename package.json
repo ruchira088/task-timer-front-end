@@ -6,9 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "NEXT_PUBLIC_GIT_HASH=$(git rev-parse --short HEAD) next build",
     "start": "next start",
-    "lint": "next lint",
-    "cdk-deploy": "cd deploy && npm ci && npm run deploy",
-    "deploy": "npm run build && npm run cdk-deploy"
+    "lint": "next lint"
   },
   "dependencies": {
     "classnames": "^2.5.1",
