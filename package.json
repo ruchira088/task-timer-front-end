@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cdk-deploy": "cd deploy && npm ci && npm run deploy",
+    "deploy": "npm run build && npm run cdk-deploy"
   },
   "dependencies": {
     "classnames": "^2.5.1",
