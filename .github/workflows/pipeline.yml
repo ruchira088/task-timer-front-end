@@ -34,14 +34,14 @@ jobs:
           role-session-name: task-timer-front-end-deploy
           role-to-assume: "arn:aws:iam::365562660444:role/github_iam_role"
 
-      - name: Install dependencies
+      - name: Install application dependencies
         run: npm ci
 
       - name: Build application
         run: npm run build
 
       - name: Deploy
-        run: npm install && npm run deploy
+        run: npm ci && npm run deploy
         working-directory: deploy
 
   send-notification:
