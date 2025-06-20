@@ -1,4 +1,3 @@
-import path from "path"
 import {aws_s3 as s3, Duration, RemovalPolicy, Stack, StackProps} from "aws-cdk-lib"
 import {Construct} from "constructs"
 import {BucketAccessControl} from "aws-cdk-lib/aws-s3"
@@ -16,6 +15,7 @@ export class TaskTimerStack extends Stack {
     scope: Construct,
     id: string,
     domain: string,
+    sourcePath: string,
     props?: StackProps) {
     super(scope, id, props)
 
@@ -59,7 +59,7 @@ export class TaskTimerStack extends Stack {
     })
 
     new BucketDeployment(this, "Deploy", {
-      sources: [Source.asset(path.resolve(__dirname, "../../out/"))],
+      sources: [Source.asset(sourcePath)],
       destinationBucket: s3Bucket,
       distribution: cloudfrontDistribution,
       distributionPaths: ["/*"]
