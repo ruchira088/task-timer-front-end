@@ -137,7 +137,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> =
     const isPaused = !props.isActive && props.milliseconds > 0
 
     useEffect(() => {
-      document.title = `Task Timer - ${title}` + (isPaused ? " (Paused)" : "")
+      document.title = `${title} ${isPaused ? " (Paused)" : ""}`
     }, [title, isPaused])
 
     return (
