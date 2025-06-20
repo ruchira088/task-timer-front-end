@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy-docker-image:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     permissions:
@@ -41,6 +41,20 @@ jobs:
         run: npm run build
 
       - name: Deploy
-        run: npm ci && npm run deploy
+        run: npm install && npm run deploy
         working-directory: deploy
+
+  send-notification:
+    runs-on: ubuntu-latest
+    if: always()
+
+    permissions:
+      id-token: write
+
+    needs:
+      - build-and-deploy
+
+    steps:
+      - name: Send Slack notification
+        uses: ruchira088/slack-github-action@v1
 
