@@ -24,7 +24,7 @@ export class TaskTimerStack extends Stack {
     }
 
     const s3Bucket = new s3.Bucket(this, "Bucket", {
-      bucketName: "task-timer.ruchij.com",
+      bucketName: domain,
       accessControl: BucketAccessControl.PRIVATE,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true
