@@ -1,6 +1,6 @@
-import {aws_s3 as s3, Duration, RemovalPolicy, Stack, StackProps} from "aws-cdk-lib"
+import {Duration, RemovalPolicy, Stack, StackProps} from "aws-cdk-lib"
 import {Construct} from "constructs"
-import {BucketAccessControl} from "aws-cdk-lib/aws-s3"
+import {Bucket, BucketAccessControl} from "aws-cdk-lib/aws-s3"
 import {Distribution, OriginAccessIdentity, ViewerProtocolPolicy} from "aws-cdk-lib/aws-cloudfront"
 import {ARecord, HostedZone, RecordTarget} from "aws-cdk-lib/aws-route53"
 import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificatemanager"
@@ -23,7 +23,7 @@ export class TaskTimerStack extends Stack {
       throw new Error(`Domain must end with ${DOMAIN_NAME}`)
     }
 
-    const s3Bucket = new s3.Bucket(this, "Bucket", {
+    const s3Bucket = new Bucket(this, "Bucket", {
       bucketName: domain,
       accessControl: BucketAccessControl.PRIVATE,
       removalPolicy: RemovalPolicy.DESTROY,
