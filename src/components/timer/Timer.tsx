@@ -4,11 +4,24 @@ import React, {FC, useEffect, useState} from "react"
 import styles from "./Timer.module.scss"
 import classNames from "classnames"
 
+enum TimeUnit {
+  Seconds = "Seconds",
+  Minutes = "Minutes",
+  Hours = "Hours"
+}
+
+const TimeUnitInMs: Record<TimeUnit, number> = {
+  [TimeUnit.Seconds]: 1000,
+  [TimeUnit.Minutes]: 60 * 1000,
+  [TimeUnit.Hours]: 60 * 60 * 1000
+}
+
 const Timer = () => {
   const [startTime, setStartTime] = useState<number | undefined>(undefined)
   const [milliseconds, setMilliseconds] = useState<number>(0)
   const [addonMilliseconds, setAddonMilliseconds] = useState<number>(0)
-  const [showAddSeconds, setShowAddSeconds] = useState<boolean>(false)
+  const [timeUnit, setTimeUnit] = useState<TimeUnit>(TimeUnit.Seconds)
+  const [showAddTime, setShowAddTime] = useState<boolean>(false)
   const [inputValue, setInputValue] = useState<string>("")
 
   useEffect(() => {
@@ -33,11 +46,11 @@ const Timer = () => {
     const time: number = parseInt(inputValue)
 
     if (!isNaN(time)) {
-      setAddonMilliseconds(addonMilliseconds => addonMilliseconds + time * 1000)
+      setAddonMilliseconds(addonMilliseconds => addonMilliseconds + (time * TimeUnitInMs[timeUnit]))
     }
 
     setInputValue("")
-    setShowAddSeconds(false)
+    setShowAddTime(false)
   }
 
   const reset = () => {
@@ -55,12 +68,15 @@ const Timer = () => {
     }
   }
 
-  const cancelAddSeconds = () => {
-    setShowAddSeconds(false)
+  const hideAddTime = () => {
+    setShowAddTime(false)
     setInputValue("")
   }
 
   const label = startTime !== undefined ? "Pause" : milliseconds === 0 ? "Start" : "Resume"
+
+  const numValue = parseInt(inputValue)
+  const isValid = !isNaN(numValue) && milliseconds + (numValue * TimeUnitInMs[timeUnit]) > 0
 
   return (
     <div className={styles.timer}>
@@ -73,16 +89,22 @@ const Timer = () => {
       </div>
       <div className={styles.addTime}>
         <button
-          onClick={() => setShowAddSeconds(true)}
-          className={classNames({[styles.hideAddSecondsInput]: showAddSeconds})}>
+          onClick={() => setShowAddTime(true)}
+          className={classNames({[styles.hideAddSecondsInput]: showAddTime}, styles.addTimeButton)}>
           Add Time
         </button>
-        <div className={classNames(styles.addTimeInput, {[styles.hideAddSecondsInput]: !showAddSeconds})}>
-          <input value={inputValue} onChange={(changeEvent) => setInputValue(changeEvent.target.value)}/>
-          <button onClick={addTime} disabled={isNaN(parseInt(inputValue))}>
-            Add Seconds
+        <div className={classNames(styles.addTimeInput, {[styles.hideAddSecondsInput]: !showAddTime})}>
+          <div className={styles.addTimeAmount}>
+            <input value={inputValue} onChange={(changeEvent) => setInputValue(changeEvent.target.value)}/>
+            <TimeUnitSelector timeUnit={timeUnit} setTimeUnit={setTimeUnit}/>
+          </div>
+          <button
+            className={classNames({[styles.addTimeInputButton]: isValid})}
+            onClick={addTime}
+            disabled={!isValid}>
+            Add
           </button>
-          <button onClick={cancelAddSeconds}>
+          <button className={styles.addTimeInputButton} onClick={hideAddTime}>
             Cancel
           </button>
         </div>
@@ -91,8 +113,30 @@ const Timer = () => {
   )
 }
 
-const MILLISECONDS_IN_MINUTE = 60 * 1000
-const MILLISECONDS_IN_HOUR = 60 * MILLISECONDS_IN_MINUTE
+export type TimeUnitSelectorProps = {
+  readonly timeUnit: TimeUnit
+  readonly setTimeUnit: (timeUnit: TimeUnit) => void
+}
+
+const TimeUnitSelector: FC<TimeUnitSelectorProps> = ({timeUnit, setTimeUnit}) => (
+  <div className={styles.timeUnitSelector}>
+    {
+      Object.values(TimeUnit)
+        .map(unit =>
+          <label className={styles.timeUnit} key={unit}>
+            <input
+              className={styles.timeUnitInput}
+              type="radio"
+              name="unit"
+              value={unit}
+              onChange={() => setTimeUnit(unit)}
+              checked={timeUnit === unit}/>
+            {unit}
+          </label>
+        )
+    }
+  </div>
+)
 
 const formatInteger = (integerValue: number, minDigits: number = 2): string => {
   const isInteger = Math.round(integerValue) - integerValue === 0
@@ -126,10 +170,10 @@ type TimerDisplayProps = {
 
 const TimerDisplay: React.FC<TimerDisplayProps> =
   props => {
-    const hours = Math.floor(props.milliseconds / MILLISECONDS_IN_HOUR)
-    const minutes = Math.floor(props.milliseconds % MILLISECONDS_IN_HOUR / MILLISECONDS_IN_MINUTE)
-    const seconds = Math.floor(props.milliseconds % MILLISECONDS_IN_MINUTE / 1000)
-    const milliseconds = props.milliseconds % 1000
+    const hours = Math.floor(props.milliseconds / TimeUnitInMs[TimeUnit.Hours])
+    const minutes = Math.floor((props.milliseconds % TimeUnitInMs[TimeUnit.Hours]) / TimeUnitInMs[TimeUnit.Minutes])
+    const seconds = Math.floor((props.milliseconds % TimeUnitInMs[TimeUnit.Minutes]) / TimeUnitInMs[TimeUnit.Seconds])
+    const milliseconds = props.milliseconds % TimeUnitInMs[TimeUnit.Seconds]
 
     const title = (hours > 0 ? [hours] : []).concat([minutes, seconds])
       .map(value => formatInteger(value, 2)).join(":")

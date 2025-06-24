@@ -14,12 +14,6 @@
       .timerButton {
         padding: 0.25em 0.5em;
         position: absolute;
-        cursor: pointer;
-        transition: transform 0.2s;
-
-        &:hover {
-          transform: scale(1.1);
-        }
       }
 
       .resetButton {
@@ -45,7 +39,6 @@
 
   button, input {
     margin: 0 0 0 auto;
-    min-width: 8em;
   }
 
   button {
@@ -58,8 +51,35 @@
     gap: 0.5em;
   }
 
+  .addTimeAmount {
+    display: flex;
+  }
+
   .hideAddSecondsInput {
     display: none;
+  }
+}
+
+.addTimeButton, .timerButton, .addTimeInputButton {
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.timeUnitSelector {
+  display: flex;
+  flex-direction: column;
+
+  .timeUnit {
+    justify-content: end;
+    width: 6.5em;
+
+    input {
+      width: 1em;
+    }
   }
 }
 
