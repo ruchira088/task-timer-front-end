@@ -95,7 +95,9 @@ const Timer = () => {
         </button>
         <div className={classNames(styles.addTimeInput, {[styles.hideAddSecondsInput]: !showAddTime})}>
           <div className={styles.addTimeAmount}>
-            <input value={inputValue} onChange={(changeEvent) => setInputValue(changeEvent.target.value)}/>
+            <input value={inputValue}
+                   onChange={(changeEvent) => setInputValue(changeEvent.target.value)}
+                   className={styles.addTimeAmountInput}/>
             <TimeUnitSelector timeUnit={timeUnit} setTimeUnit={setTimeUnit}/>
           </div>
           <button

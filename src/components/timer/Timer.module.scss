@@ -34,10 +34,11 @@
 
   input {
     width: 50%;
-    max-width: 10em;
+    max-width: 2.5em;
+    margin: 0 0 0 auto;
   }
 
-  button, input {
+  button {
     margin: 0 0 0 auto;
   }
 
@@ -76,6 +77,7 @@
   .timeUnit {
     justify-content: end;
     width: 6.5em;
+    cursor: pointer;
 
     input {
       width: 1em;
