@@ -45,7 +45,9 @@ export function Layout({children}: { children: ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      {/* A full-height flex column so the routed page can claim the space the
+          header leaves, without anything having to know the header's height. */}
+      <body className="flex min-h-dvh flex-col">
         {children}
         <ScrollRestoration />
         <Scripts />
