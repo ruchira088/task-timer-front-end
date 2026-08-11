@@ -76,10 +76,6 @@
   transition: color 0.25s ease;
 }
 
-.subLabel {
-  margin-left: clamp(0.4rem, 1.6cqi, 1.1rem);
-}
-
 .displayLive .subValue {
   color: var(--tt-live);
 }

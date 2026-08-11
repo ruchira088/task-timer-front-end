@@ -243,7 +243,6 @@ const TimerDisplay: FC<TimerDisplayProps> =
         <span className={cn(styles.value, styles.subValue)} data-testid="timer-value-SS">
           {formatInteger(Math.round(milliseconds / 10), 2)}
         </span>
-        <span className={cn(styles.unitLabel, styles.subLabel)}>Cs</span>
       </div>
     )
   }

@@ -29,14 +29,6 @@ At a narrow width the container queries scale the display down rather than wrapp
 
 <img src="docs/screenshots/timer-narrow.png" alt="The timer on a narrow viewport" width="360">
 
-## Outstanding follow-ups
-
-Carried over from the template — none of them block local development.
-
-- **Sentry**: `app/services/Sentry.ts` still has empty DSN placeholders, which disables Sentry per environment. Create dev/staging/prod projects and paste the DSNs in to enable it.
-- **GitHub environments**: the workflow gates deploys on `Staging` and `Production` environments — create them in the repo settings.
-- **Hosted zone**: `cdk-deploy/cdk.context.json` is not checked in; the first `cdk synth` populates it with the Route53 lookup for `ruchij.com`.
-
 ## Project layout
 
 ```
