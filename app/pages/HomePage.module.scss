@@ -1,0 +1,14 @@
+// The Timer's responsive rules are container queries, so this wrapper is the
+// query container. Height is the viewport minus the AuthenticatedLayout header.
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 2rem;
+  min-height: calc(100dvh - 3.75rem);
+  container-type: inline-size;
+}
+
+.hide {
+  display: none;
+}
