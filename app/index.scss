@@ -35,13 +35,18 @@
 .loading-logo {
   width: 64px;
   height: 64px;
+  color: #222;
+
+  @media (prefers-color-scheme: dark) {
+    color: #eee;
+  }
 }
 
 .loading-ring {
   position: absolute;
   inset: 0;
   border: 3px solid rgba(128, 128, 128, 0.2);
-  border-top-color: #d80027;
+  border-top-color: #c2660f;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -68,7 +73,7 @@
 .loading-bar {
   height: 100%;
   width: 30%;
-  background: #d80027;
+  background: #c2660f;
   border-radius: 2px;
   animation: loadingBar 1.2s ease-in-out infinite;
 }

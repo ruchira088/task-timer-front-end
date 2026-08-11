@@ -5,13 +5,13 @@ import type { Route } from "./+types/root"
 import "./app.css"
 import "./index.scss"
 import { ApplicationConfigurationProvider } from "~/providers/ApplicationConfigurationProvider"
-import smallLogo from "~/images/small-logo.svg"
+import { Timer as TimerIcon } from "lucide-react"
 import { initSentry } from "~/services/Sentry"
 
 export function meta(_args: Route.MetaArgs) {
   return [
     {title: "Task Timer"},
-    {name: "description", content: "Task Timer"},
+    {name: "description", content: "A stopwatch for timing tasks."},
   ]
 }
 
@@ -25,6 +25,14 @@ export const links: Route.LinksFunction = () => [
   {
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+  },
+  {
+    // Display face for the timer numerals. Space Grotesk has fixed-width
+    // figures — proportional digits visibly jitter when the centiseconds tick
+    // ten times a second — and, unlike the monospace candidates, its zero has
+    // no dot or slash through it, which matters at clock sizes.
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap",
   },
 ];
 
@@ -63,7 +71,7 @@ export function HydrateFallback() {
     <div className="loading-screen">
       <div className="loading-content">
         <div className="loading-logo-container">
-          <img src={smallLogo} alt="Task Timer" className="loading-logo" />
+          <TimerIcon className="loading-logo" aria-hidden="true" />
           <div className="loading-ring"></div>
         </div>
         <h1 className="loading-title">Task Timer</h1>

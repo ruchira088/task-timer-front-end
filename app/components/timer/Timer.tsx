@@ -1,4 +1,5 @@
 import { type FC, useEffect, useState } from "react"
+import { Pause, Play, Plus, RotateCcw } from "lucide-react"
 import styles from "./Timer.module.scss"
 import { cn } from "~/lib/utils"
 
@@ -71,46 +72,84 @@ const Timer = () => {
     setInputValue("")
   }
 
-  const label = startTime !== undefined ? "Pause" : milliseconds === 0 ? "Start" : "Resume"
+  const isRunning = startTime !== undefined
+  const label = isRunning ? "Pause" : milliseconds === 0 ? "Start" : "Resume"
+  const ActionIcon = isRunning ? Pause : Play
 
   const numValue = parseInt(inputValue)
   const isValid = !isNaN(numValue) && milliseconds + (numValue * TimeUnitInMs[timeUnit]) > 0
 
   return (
     <div className={styles.timer}>
-      <TimerDisplay milliseconds={milliseconds} isActive={startTime !== undefined}/>
-      <div className={styles.footer}>
-        <div className={styles.timerButtonPanel}>
-          <button onClick={toggleActive} className={cn(styles.timerButton, styles.actionButton)}>{label}</button>
-          <button onClick={reset} className={cn(styles.timerButton, styles.resetButton)}>Reset</button>
-        </div>
-      </div>
-      <div className={styles.addTime}>
-        <button
-          onClick={() => setShowAddTime(true)}
-          className={cn({[styles.hideAddSecondsInput]: showAddTime}, styles.addTimeButton)}>
-          Add Time
+      <TimerDisplay milliseconds={milliseconds} isActive={isRunning}/>
+
+      <Status isRunning={isRunning} milliseconds={milliseconds}/>
+
+      <div className={styles.controls}>
+        <button onClick={toggleActive} className={cn(styles.control, styles.primary)}>
+          <ActionIcon aria-hidden="true"/>
+          {label}
         </button>
-        <div className={cn(styles.addTimeInput, {[styles.hideAddSecondsInput]: !showAddTime})}>
-          <div className={styles.addTimeAmount}>
-            <input value={inputValue}
-                   name="amount"
-                   onChange={(changeEvent) => setInputValue(changeEvent.target.value)}
-                   className={styles.addTimeAmountInput}/>
-            <TimeUnitSelector timeUnit={timeUnit} setTimeUnit={setTimeUnit}/>
-          </div>
-          <button
-            className={cn({[styles.addTimeInputButton]: isValid})}
-            onClick={addTime}
-            disabled={!isValid}>
-            Add
-          </button>
-          <button className={styles.addTimeInputButton} onClick={hideAddTime}>
-            Cancel
-          </button>
-        </div>
+        <button onClick={reset} className={cn(styles.control, styles.ghost)} disabled={milliseconds === 0}>
+          <RotateCcw aria-hidden="true"/>
+          Reset
+        </button>
       </div>
+
+      {
+        showAddTime
+          ? (
+            <div className={styles.addTimePanel}>
+              <div className={styles.addTimeRow}>
+                <label className={styles.amountLabel} htmlFor="add-time-amount">
+                  Amount
+                  <input
+                    id="add-time-amount"
+                    value={inputValue}
+                    name="amount"
+                    inputMode="numeric"
+                    autoFocus
+                    onChange={changeEvent => setInputValue(changeEvent.target.value)}
+                    className={styles.amountInput}/>
+                </label>
+                <TimeUnitSelector timeUnit={timeUnit} setTimeUnit={setTimeUnit}/>
+              </div>
+              <div className={styles.addTimeActions}>
+                <button className={cn(styles.control, styles.ghost)} onClick={hideAddTime}>
+                  Cancel
+                </button>
+                <button className={cn(styles.control, styles.primary)} onClick={addTime} disabled={!isValid}>
+                  Add
+                </button>
+              </div>
+            </div>
+          )
+          : (
+            <button onClick={() => setShowAddTime(true)} className={cn(styles.control, styles.quiet)}>
+              <Plus aria-hidden="true"/>
+              Add time
+            </button>
+          )
+      }
     </div>
+  )
+}
+
+type StatusProps = {
+  readonly isRunning: boolean
+  readonly milliseconds: number
+}
+
+const Status: FC<StatusProps> = ({isRunning, milliseconds}) => {
+  if (!isRunning && milliseconds === 0) {
+    return <p className={styles.status}>&nbsp;</p>
+  }
+
+  return (
+    <p className={cn(styles.status, isRunning && styles.statusLive)}>
+      <span className={styles.statusDot} aria-hidden="true"/>
+      {isRunning ? "Running" : "Paused"}
+    </p>
   )
 }
 
@@ -120,11 +159,11 @@ export type TimeUnitSelectorProps = {
 }
 
 const TimeUnitSelector: FC<TimeUnitSelectorProps> = ({timeUnit, setTimeUnit}) => (
-  <div className={styles.timeUnitSelector}>
+  <div className={styles.timeUnitSelector} role="radiogroup" aria-label="Unit">
     {
       Object.values(TimeUnit)
         .map(unit =>
-          <label className={styles.timeUnit} key={unit}>
+          <label className={cn(styles.timeUnit, timeUnit === unit && styles.timeUnitSelected)} key={unit}>
             <input
               className={styles.timeUnitInput}
               type="radio"
@@ -186,24 +225,25 @@ const TimerDisplay: FC<TimerDisplayProps> =
     }, [title, isPaused])
 
     return (
-      <div className={styles.timerDisplay}>
-        {/* Hours */}
-        <TimerDisplayUnit unit="hh" value={hours}/>
-
+      // A two-row grid: every numeral sits on one baseline and every label on
+      // the next, so the display reads as a single instrument rather than four
+      // stacked columns.
+      <div
+        className={cn(styles.display, props.isActive && styles.displayLive)}
+        role="timer"
+        aria-label={`${title} elapsed`}>
+        <TimerDisplayUnit unit="hh" label="Hrs" value={hours}/>
         <TimeSeparator/>
-
-        {/* Minutes */}
-        <TimerDisplayUnit unit="mm" value={minutes}/>
-
+        <TimerDisplayUnit unit="mm" label="Min" value={minutes}/>
         <TimeSeparator/>
+        <TimerDisplayUnit unit="ss" label="Sec" value={seconds}/>
 
-        {/* Seconds */}
-        <TimerDisplayUnit unit="ss" value={seconds}/>
-
-        <TimeSeparator/>
-
-        {/* Centi-seconds */}
-        <TimerDisplayUnit unit="SS" value={Math.round(milliseconds / 10)}/>
+        {/* Centiseconds are the sub-register — smaller and the only saturated
+            colour, so the fastest-moving digits don't lead the composition. */}
+        <span className={cn(styles.value, styles.subValue)} data-testid="timer-value-SS">
+          {formatInteger(Math.round(milliseconds / 10), 2)}
+        </span>
+        <span className={cn(styles.unitLabel, styles.subLabel)}>Cs</span>
       </div>
     )
   }
@@ -211,15 +251,22 @@ const TimerDisplay: FC<TimerDisplayProps> =
 export type TimerDisplayUnitProps = {
   readonly value: number
   readonly unit: string
+  readonly label: string
 }
 
+// Each of these contributes two cells to the display grid — a numeral on the
+// value row and its label on the row beneath — so they must be fragments, not
+// wrapper elements.
 const TimerDisplayUnit: FC<TimerDisplayUnitProps> = props =>
-  <div className={styles.timerDisplayUnit}>
-    <div className={styles.unit}>{props.unit}</div>
-    <div className={styles.value} data-testid={`timer-value-${props.unit}`}>{formatInteger(props.value, 2)}</div>
-  </div>
+  <>
+    <span className={styles.value} data-testid={`timer-value-${props.unit}`}>{formatInteger(props.value, 2)}</span>
+    <span className={styles.unitLabel}>{props.label}</span>
+  </>
 
 const TimeSeparator = () =>
-  <div className={styles.timeSeparator}>:</div>
+  <>
+    <span className={styles.timeSeparator} aria-hidden="true">:</span>
+    <span aria-hidden="true"/>
+  </>
 
 export default Timer

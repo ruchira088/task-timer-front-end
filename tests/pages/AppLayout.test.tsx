@@ -28,8 +28,10 @@ describe("AppLayout", () => {
   test("renders the branded header", async () => {
     renderLayout()
 
-    expect(await screen.findByRole("link", { name: /Task Timer/ })).toHaveAttribute("href", "/")
-    expect(screen.getByRole("img", { name: "Task Timer" })).toBeInTheDocument()
+    const link = await screen.findByRole("link", { name: /Task Timer/ })
+    expect(link).toHaveAttribute("href", "/")
+    // The timer glyph is decorative — the link text carries the accessible name.
+    expect(link.querySelector("svg")).toBeInTheDocument()
   })
 
   test("renders the theme toggle", async () => {

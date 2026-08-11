@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A stopwatch SPA deployed to `timer.ruchij.com`. Stamped from `ruchira088/react-template`, so part of the tree is still template scaffolding (theme provider, Sentry, shadcn UI, functional helpers) rather than app code — the actual feature is `app/components/timer/Timer.tsx`, rendered by `HomePage`.
 
-**There is no backend and no authentication.** The timer is entirely client-side. The template's auth/HTTP layer was deleted wholesale — login/signup pages, `UnauthenticatedLayout`, `AuthenticationService`, `HttpClient`, `MockApi`, `ApiConfiguration`, the `User`/`AuthenticationToken` models, the shadcn `input`/`label` primitives, and the `axios` + `@radix-ui/react-label` dependencies. `AuthenticatedLayout` was replaced by `app/pages/AppLayout.tsx` (header + theme toggle, no token check). Don't reintroduce any of it speculatively; if a backend ever lands, restore those files from `ruchira088/react-template` rather than rewriting them.
+The timer runs entirely in the browser. The template's auth and HTTP layers were removed as unused — if you ever need them, restore the files from `ruchira088/react-template` rather than rewriting them.
 
 What's left of the service layer is client-only: `Config.ts` (hostname → environment, consumed only by Sentry), `config/` + `kv-store/` (localStorage theme persistence), `Sentry.ts`. `types/Option.ts` is the one surviving functional helper — the template's `Either`, `Zod` and `utils/` (`Formatter`, `StringUtils`) modules were deleted as unreachable, taking `@types/luxon` with them.
 

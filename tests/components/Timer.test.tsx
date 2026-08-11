@@ -47,10 +47,41 @@ describe("Timer", () => {
     expect(button("Reset")).toBeInTheDocument()
   })
 
+  test("disables Reset until there is something to reset", () => {
+    render(<Timer />)
+
+    expect(button("Reset")).toBeDisabled()
+
+    fireEvent.click(button("Add time"))
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "5" } })
+    fireEvent.click(button("Add"))
+
+    expect(button("Reset")).toBeEnabled()
+  })
+
+  test("exposes the elapsed time to assistive tech without announcing every tick", () => {
+    render(<Timer />)
+
+    expect(screen.getByRole("timer")).toHaveAttribute("aria-label", "00:00 elapsed")
+    expect(screen.getByRole("timer")).not.toHaveAttribute("aria-live")
+  })
+
+  test("reports Paused once time has accrued", () => {
+    render(<Timer />)
+
+    expect(screen.queryByText("Paused")).not.toBeInTheDocument()
+
+    fireEvent.click(button("Add time"))
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "5" } })
+    fireEvent.click(button("Add"))
+
+    expect(screen.getByText("Paused")).toBeInTheDocument()
+  })
+
   test("adds time in the selected unit", () => {
     render(<Timer />)
 
-    fireEvent.click(button("Add Time"))
+    fireEvent.click(button("Add time"))
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "90" } })
     fireEvent.click(screen.getByRole("radio", { name: TimeUnit.Minutes }))
     fireEvent.click(button("Add"))
@@ -61,7 +92,7 @@ describe("Timer", () => {
   test("defaults to adding seconds", () => {
     render(<Timer />)
 
-    fireEvent.click(button("Add Time"))
+    fireEvent.click(button("Add time"))
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "45" } })
     fireEvent.click(button("Add"))
 
@@ -71,7 +102,7 @@ describe("Timer", () => {
   test("keeps the Add button disabled until the input is a positive number", () => {
     render(<Timer />)
 
-    fireEvent.click(button("Add Time"))
+    fireEvent.click(button("Add time"))
     expect(button("Add")).toBeDisabled()
 
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "abc" } })
@@ -84,13 +115,13 @@ describe("Timer", () => {
   test("Cancel discards the entered amount", () => {
     render(<Timer />)
 
-    fireEvent.click(button("Add Time"))
+    fireEvent.click(button("Add time"))
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "45" } })
     fireEvent.click(button("Cancel"))
 
     expect(displayed()).toBe("00:00:00:00")
 
-    fireEvent.click(button("Add Time"))
+    fireEvent.click(button("Add time"))
     expect(screen.getByRole("textbox")).toHaveValue("")
   })
 
@@ -155,7 +186,7 @@ describe("Timer", () => {
     test("counts added time alongside elapsed time", () => {
       render(<Timer />)
 
-      fireEvent.click(button("Add Time"))
+      fireEvent.click(button("Add time"))
       fireEvent.change(screen.getByRole("textbox"), { target: { value: "10" } })
       fireEvent.click(button("Add"))
 
